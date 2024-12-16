@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANQUE</title>
+</head>
+<body>
+    <form id="searchForm" action="#">
+        <input type="text" id="accountNumberInput" placeholder="Entrez votre numéro de compte"> <br> <br>
+        <button type="submit">RECHERCHER</button> <br> <br>
+        <input type="text" id="withdrawAmountInput" placeholder="Entrez le montant à retirer"> <br> <br>
+        <button type="submit">EFFECTUEZ LE RETRAIT</button>
+    </form>
+
+    <div id="withdrawResult" style="display: none;"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+
+            var accountNumber = document.getElementById('accountNumberInput').value;
+
+            // Vérifier si le numéro de compte existe
+            if (accountExists(accountNumber)) {
+                // Afficher le récapitulatif de l'opération et le solde actuel
+                var withdrawResultDiv = document.getElementById('withdrawResult');
+                withdrawResultDiv.innerText = "Opération de retrait sur le compte " + accountNumber + ".";
+                withdrawResultDiv.style.display = 'block';
+            } else {
+                // Afficher un message d'erreur si le numéro de compte n'existe pas
+                var withdrawResultDiv = document.getElementById('withdrawResult');
+                withdrawResultDiv.innerText = "Le numéro de compte n'existe pas.";
+                withdrawResultDiv.style.display = 'block';
+            }
+
+            // Réinitialiser le champ du formulaire
+            document.getElementById('searchForm').reset();
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+
+            var accountNumber = document.getElementById('accountNumberInput').value;
+            var withdrawAmount = document.getElementById('withdrawAmountInput').value;
+
+            // Vérifier si le numéro de compte existe
+            if (accountExists(accountNumber)) {
+                // Effectuer l'opération de retrait
+                var newBalance = withdrawFromAccount(accountNumber, withdrawAmount);
+
+                // Afficher le récapitulatif de l'opération et le nouveau solde
+                var withdrawResultDiv = document.getElementById('withdrawResult');
+                withdrawResultDiv.innerText = "Opération de retrait effectuée sur le compte " + accountNumber + ". Nouveau solde : " + newBalance + " €";
+                withdrawResultDiv.style.display = 'block';
+            } else {
+                // Afficher un message d'erreur si le numéro de compte n'existe pas
+                var withdrawResultDiv = document.getElementById('withdrawResult');
+                withdrawResultDiv.innerText = "Le numéro de compte n'existe pas.";
+                withdrawResultDiv.style.display = 'block';
+            }
+
+            // Réinitialiser les champs du formulaire
+            document.getElementById('withdrawForm').reset();
+        });
+
+        function accountExists(accountNumber) {
+            // Ici, vous pouvez ajouter la logique pour vérifier si le numéro de compte existe dans votre système
+            // Vous pouvez utiliser une base de données, une API, ou une autre source de données pour effectuer cette vérification
+            // Pour l'exemple, nous supposons que le compte existe si son numéro est "123456"
+
+            return accountNumber === '123456';
+        }
+
+        function withdrawFromAccount(accountNumber, amount) {
+            // Ici, vous pouvez ajouter la logique pour effectuer l'opération de retrait sur le compte
+            // Vous pouvez mettre à jour le solde du compte dans votre système
+            // Pour l'exemple, nous supposons que le solde initial du compte est de 500 €
+
+            var initialBalance = 500;
+            var newBalance = initialBalance - parseInt(amount);
+
+            return newBalance;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANQUE</title>
+</head>
+<body>
+    <form id="newAccountForm" style="margin-top: 200px; margin-left: 500px; ">
+        <input type="text" id="fullNameInput" placeholder="Nom du titulaire"> <br> <br>
+        <input type="text" id="firstNameInput" placeholder="Prénom du titulaire"> <br> <br>
+        <button type="submit">Création du compte</button>
+    </form>
+
+    <div id="accountNumber" style="display: none;"></div>
+
+    <script>
+        document.getElementById('newAccountForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+
+            var fullName = document.getElementById('fullNameInput').value;
+            var firstName = document.getElementById('firstNameInput').value;
+
+            // Générer un numéro de compte aléatoire
+            var accountNumber = generateAccountNumber();
+
+            // Afficher le numéro de compte créé à l'utilisateur
+            var accountNumberDiv = document.getElementById('accountNumber');
+            accountNumberDiv.innerText = "Le compte a été créé avec succès. Le numéro du compte est " + accountNumber + ".";
+            accountNumberDiv.style.display = 'block';
+
+            // Réinitialiser les champs du formulaire
+            document.getElementById('newAccountForm').reset();
+        });
+
+        function generateAccountNumber() {
+            var accountNumber = '';
+            var digits = '0123456789';
+
+            for (var i = 0; i < 10; i++) {
+                var randomIndex = Math.floor(Math.random() * digits.length);
+                accountNumber += digits.charAt(randomIndex);
+            }
+
+            return accountNumber;
+        }
+    </script>
+</body>
+</html>

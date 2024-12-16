@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BANQUE</title>
+</head>
+<body>
+    <form id="balanceForm" action="#" style="margin-top: 300px; margin-left: 500px;"> 
+        <input type="text" id="accountNumberInput" placeholder="Entrez votre numéro de compte"> <br> <br>
+        <button type="submit">RECHERCHER</button>
+    </form>
+
+    <div id="balanceResult" style="display: none;"></div>
+
+    <script>
+        document.getElementById('balanceForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Empêche la soumission du formulaire
+
+            var accountNumber = document.getElementById('accountNumberInput').value;
+
+            // Vérifier si le numéro de compte existe
+            if (accountExists(accountNumber)) {
+                var balance = getAccountBalance(accountNumber);
+
+                // Afficher le solde du compte
+                var balanceResultDiv = document.getElementById('balanceResult');
+                balanceResultDiv.innerText = "Le solde du compte " + accountNumber + " est de : " + balance + " €";
+                balanceResultDiv.style.display = 'block';
+            } else {
+                // Afficher un message d'erreur si le numéro de compte n'existe pas
+                var balanceResultDiv = document.getElementById('balanceResult');
+                balanceResultDiv.innerText = "Le numéro de compte n'existe pas.";
+                balanceResultDiv.style.display = 'block';
+            }
+
+            // Réinitialiser le champ du formulaire
+            document.getElementById('balanceForm').reset();
+        });
+
+        function accountExists(accountNumber) {
+            // Ici, vous pouvez ajouter la logique pour vérifier si le numéro de compte existe dans votre système
+            // Vous pouvez utiliser une base de données, une API, ou une autre source de données pour effectuer cette vérification
+            // Pour l'exemple, nous supposons que nous avons un tableau d'objets contenant les comptes enregistrés
+            var accounts = [
+                { accountNumber: 'ABC1234567', balance: 1000 },
+                { accountNumber: 'DEF9876543', balance: 2000 },
+                { accountNumber: 'GHI3359242', balance: 3000 },
+                { accountNumber: 'JKL8455284', balance: 4000 },
+                { accountNumber: 'MNO7328615', balance: 5000 },
+            ];
+
+            return accounts.some(function(account) {
+                return account.accountNumber === accountNumber;
+            });
+        }
+
+        function getAccountBalance(accountNumber) {
+            // Ici, vous pouvez ajouter la logique pour récupérer le solde du compte à partir de votre système
+            // Encore une fois, cela peut impliquer l'utilisation d'une base de données, d'une API, etc.
+            // Pour l'exemple, nous supposons que nous avons un tableau d'objets contenant les comptes enregistrés
+            var accounts = [
+                { accountNumber: 'ABC1234567', balance: 1000 },
+                { accountNumber: 'DEF9876543', balance: 2000 },
+                { accountNumber: 'GHI3359242', balance: 3000 },
+                { accountNumber: 'JKL8455284', balance: 4000 },
+                { accountNumber: 'MNO7328615', balance: 5000 },
+            ];
+
+            var account = accounts.find(function(account) {
+                return account.accountNumber === accountNumber;
+            });
+
+            return account.balance;
+        }
+    </script>
+</body>
+</html>
