@@ -1,87 +1,168 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANQUE</title>
+    <title>Retrait d'argent - BANQUE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #004d40, #2E8B57);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 120px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2E8B57;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2E8B57;
+            color: white;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #246b46;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+        }
+
+        #result.success {
+            background-color: #43a047;
+            color: white;
+        }
+
+        #result.error {
+            background-color: #e53935;
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background-color: #004d40;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-link:hover {
+            background-color: #00796b;
+        }
+    </style>
 </head>
 <body>
-    <form id="searchForm" action="#">
-        <input type="text" id="accountNumberInput" placeholder="Entrez votre numéro de compte"> <br> <br>
-        <button type="submit">RECHERCHER</button> <br> <br>
-        <input type="text" id="withdrawAmountInput" placeholder="Entrez le montant à retirer"> <br> <br>
-        <button type="submit">EFFECTUEZ LE RETRAIT</button>
-    </form>
+    <div class="container">
+        <h1>Retrait d'argent</h1>
 
-    <div id="withdrawResult" style="display: none;"></div>
+        <form id="withdrawForm">
+            <input type="text" id="accountNumberInput" placeholder="Numéro de compte" required />
+            <input type="number" id="withdrawAmountInput" placeholder="Montant à retirer" min="1" required />
+            <button type="submit">Effectuer le retrait</button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="btn-container">
+            <a href="../index.html" class="btn-link">🏠 Accueil</a>
+            <a href="consultation.html" class="btn-link">💰 Consulter solde</a>
+        </div>
+    </div>
 
     <script>
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche la soumission du formulaire
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('withdrawForm');
+            const resultDiv = document.getElementById('result');
 
-            var accountNumber = document.getElementById('accountNumberInput').value;
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-            // Vérifier si le numéro de compte existe
-            if (accountExists(accountNumber)) {
-                // Afficher le récapitulatif de l'opération et le solde actuel
-                var withdrawResultDiv = document.getElementById('withdrawResult');
-                withdrawResultDiv.innerText = "Opération de retrait sur le compte " + accountNumber + ".";
-                withdrawResultDiv.style.display = 'block';
-            } else {
-                // Afficher un message d'erreur si le numéro de compte n'existe pas
-                var withdrawResultDiv = document.getElementById('withdrawResult');
-                withdrawResultDiv.innerText = "Le numéro de compte n'existe pas.";
-                withdrawResultDiv.style.display = 'block';
-            }
+                const accountNumber = document.getElementById('accountNumberInput').value.trim();
+                const withdrawAmount = parseFloat(document.getElementById('withdrawAmountInput').value);
 
-            // Réinitialiser le champ du formulaire
-            document.getElementById('searchForm').reset();
+                // Récupérer les comptes depuis localStorage
+                let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+
+                // Chercher le compte correspondant
+                const account = accounts.find(acc => acc.number === accountNumber);
+
+                if (!account) {
+                    resultDiv.textContent = "❌ Le numéro de compte n'existe pas.";
+                    resultDiv.className = "error";
+                    resultDiv.style.display = "block";
+                    return;
+                }
+
+                // Vérifier le solde
+                if (withdrawAmount > account.balance) {
+                    resultDiv.textContent = `⚠️ Fonds insuffisants. Solde actuel : ${account.balance} FCFA`;
+                    resultDiv.className = "error";
+                    resultDiv.style.display = "block";
+                    return;
+                }
+
+                // Effectuer le retrait
+                account.balance -= withdrawAmount;
+
+                // Sauvegarder dans localStorage
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+
+                resultDiv.innerHTML = `
+                    ✅ Retrait de <strong>${withdrawAmount} FCFA</strong> effectué avec succès.<br>
+                    Nouveau solde : <strong>${account.balance} FCFA</strong>.
+                `;
+                resultDiv.className = "success";
+                resultDiv.style.display = "block";
+
+                form.reset();
+            });
         });
-
-        document.getElementById('withdrawForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche la soumission du formulaire
-
-            var accountNumber = document.getElementById('accountNumberInput').value;
-            var withdrawAmount = document.getElementById('withdrawAmountInput').value;
-
-            // Vérifier si le numéro de compte existe
-            if (accountExists(accountNumber)) {
-                // Effectuer l'opération de retrait
-                var newBalance = withdrawFromAccount(accountNumber, withdrawAmount);
-
-                // Afficher le récapitulatif de l'opération et le nouveau solde
-                var withdrawResultDiv = document.getElementById('withdrawResult');
-                withdrawResultDiv.innerText = "Opération de retrait effectuée sur le compte " + accountNumber + ". Nouveau solde : " + newBalance + " €";
-                withdrawResultDiv.style.display = 'block';
-            } else {
-                // Afficher un message d'erreur si le numéro de compte n'existe pas
-                var withdrawResultDiv = document.getElementById('withdrawResult');
-                withdrawResultDiv.innerText = "Le numéro de compte n'existe pas.";
-                withdrawResultDiv.style.display = 'block';
-            }
-
-            // Réinitialiser les champs du formulaire
-            document.getElementById('withdrawForm').reset();
-        });
-
-        function accountExists(accountNumber) {
-            // Ici, vous pouvez ajouter la logique pour vérifier si le numéro de compte existe dans votre système
-            // Vous pouvez utiliser une base de données, une API, ou une autre source de données pour effectuer cette vérification
-            // Pour l'exemple, nous supposons que le compte existe si son numéro est "123456"
-
-            return accountNumber === '123456';
-        }
-
-        function withdrawFromAccount(accountNumber, amount) {
-            // Ici, vous pouvez ajouter la logique pour effectuer l'opération de retrait sur le compte
-            // Vous pouvez mettre à jour le solde du compte dans votre système
-            // Pour l'exemple, nous supposons que le solde initial du compte est de 500 €
-
-            var initialBalance = 500;
-            var newBalance = initialBalance - parseInt(amount);
-
-            return newBalance;
-        }
     </script>
 </body>
 </html>

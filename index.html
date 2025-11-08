@@ -1,24 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANQUE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BANQUE</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        background-color: #f4f4f9;
+    }
+    .container {
+        max-width: 600px;
+        margin: 100px auto;
+        padding: 40px;
+        background-color: #2E8B57;
+        color: white;
+        border-radius: 12px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    h1 { font-weight: 600; margin-bottom: 10px; }
+    h3 { font-weight: 400; margin-bottom: 30px; }
+    .btn {
+        display: block;
+        margin: 10px auto;
+        padding: 15px 20px;
+        background-color: #ffffff33;
+        color: white;
+        border-radius: 8px;
+        text-decoration: none;
+        width: 80%;
+        text-align: center;
+        transition: background 0.3s;
+    }
+    .btn:hover { background-color: #ffffff66; }
+    input[type="text"] {
+        width: 80%;
+        padding: 12px;
+        border-radius: 8px;
+        border: none;
+        margin: 20px 0;
+        font-size: 16px;
+    }
+</style>
 </head>
-<body >
-    <div style="text-align: center; background-color: green; color: white; width: 600px; margin-left: 300px; margin-top: 100px;">
-        <h1>BIENVENUE</h1>
-    <h3>QUEL OPERATION VOULEZ VOUS EFFECTUEZ SVP</h3>
-    <a href="banque/new.html" style="color: white; text-decoration: none;"><h4>1.LA CREATION D'UN NOUVEAU COMPTE</h4></a>
-    <a href="banque/liste.html" style="color: white; text-decoration: none;"><h4>2.LA LISTE DES COMPTES ENREGISTRE</h4></a>
-    <a href="banque/solde.html" style="color: white; text-decoration: none;"><h4>3.UNE CONSULATION DE SOLDE</h4></a>
-    <a href="banque/dépot.html" style="color: white; text-decoration: none;"><h4>4.UNE OPERATION DE DEPOT</h4></a>
-    <a href="banque/retrait.html" style="color: white; text-decoration: none;"><h4>5.UNE OPERATION DE RETRAIT</h4></a>
-    <input type="text" placeholder="1" style="height: 50px; width: 500px;"> <br>
-    <a href="#" style="color: white; text-decoration: none; margin-right: 50px;">ACCUEIL</a>
-    <a href="#" style="color: white; text-decoration: none;">VALIDER</a>
-    </div>
-    
-    <script src="banque/banque.js"></script>
+<body>
+<div class="container">
+    <h1>BIENVENUE</h1>
+    <h3>Quelle opération voulez-vous effectuer ?</h3>
+
+    <a href="banque/new.html" class="btn">Créer un nouveau compte</a>
+    <a href="banque/liste.html" class="btn">Liste des comptes enregistrés</a>
+    <a href="banque/solde.html" class="btn">Consultation de solde</a>
+    <a href="banque/dépot.html" class="btn">Opération de dépôt</a>
+    <a href="banque/retrait.html" class="btn">Opération de retrait</a>
+
+    <input type="text" placeholder="Entrez le numéro de l’opération">
+    <a href="#" class="btn">ACCUEIL</a>
+    <a href="#" class="btn">VALIDER</a>
+</div>
+<script src="banque/banque.js"></script>
 </body>
 </html>

@@ -1,49 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANQUE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Création de compte - BANQUE</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Poppins', sans-serif; margin: 0; background-color: #f4f4f9; }
+    .container { max-width: 500px; margin: 150px auto; padding: 40px; background-color: #2E8B57; color: white; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    h1 { margin-bottom: 20px; font-weight: 600; }
+    input[type="text"] { width: 90%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; font-size: 16px; }
+    button { padding: 15px 25px; margin-top: 15px; border: none; border-radius: 8px; background-color: #ffffff33; color: white; font-size: 16px; cursor: pointer; transition: background 0.3s; }
+    button:hover { background-color: #ffffff66; }
+    #accountNumber { margin-top: 20px; font-weight: 500; background-color: #ffffff22; padding: 10px; border-radius: 8px; }
+</style>
 </head>
 <body>
-    <form id="newAccountForm" style="margin-top: 200px; margin-left: 500px; ">
-        <input type="text" id="fullNameInput" placeholder="Nom du titulaire"> <br> <br>
-        <input type="text" id="firstNameInput" placeholder="Prénom du titulaire"> <br> <br>
+<div class="container">
+    <h1>Créer un nouveau compte</h1>
+    <form id="newAccountForm">
+        <input type="text" id="fullNameInput" placeholder="Nom du titulaire" required> <br>
+        <input type="text" id="firstNameInput" placeholder="Prénom du titulaire" required> <br>
         <button type="submit">Création du compte</button>
     </form>
 
     <div id="accountNumber" style="display: none;"></div>
+</div>
 
-    <script>
-        document.getElementById('newAccountForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche la soumission du formulaire
+<script>
+document.getElementById('newAccountForm').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-            var fullName = document.getElementById('fullNameInput').value;
-            var firstName = document.getElementById('firstNameInput').value;
+    const fullName = document.getElementById('fullNameInput').value.trim();
+    const firstName = document.getElementById('firstNameInput').value.trim();
+    const accountNumber = generateAccountNumber();
+    const creationDate = new Date().toLocaleDateString();
 
-            // Générer un numéro de compte aléatoire
-            var accountNumber = generateAccountNumber();
+    const account = {
+        date: creationDate,
+        number: accountNumber,
+        fullName: `${fullName} ${firstName}`,
+        balance: 0
+    };
 
-            // Afficher le numéro de compte créé à l'utilisateur
-            var accountNumberDiv = document.getElementById('accountNumber');
-            accountNumberDiv.innerText = "Le compte a été créé avec succès. Le numéro du compte est " + accountNumber + ".";
-            accountNumberDiv.style.display = 'block';
+    // Récupérer les comptes existants depuis localStorage
+    let accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+    accounts.push(account); // Ajouter le nouveau compte
+    localStorage.setItem('accounts', JSON.stringify(accounts)); // Sauvegarder dans localStorage
 
-            // Réinitialiser les champs du formulaire
-            document.getElementById('newAccountForm').reset();
-        });
+    // Afficher le numéro du compte créé
+    const accountNumberDiv = document.getElementById('accountNumber');
+    accountNumberDiv.innerText = `Le compte a été créé avec succès. Numéro : ${accountNumber}`;
+    accountNumberDiv.style.display = 'block';
 
-        function generateAccountNumber() {
-            var accountNumber = '';
-            var digits = '0123456789';
+    // Réinitialiser le formulaire
+    document.getElementById('newAccountForm').reset();
+});
 
-            for (var i = 0; i < 10; i++) {
-                var randomIndex = Math.floor(Math.random() * digits.length);
-                accountNumber += digits.charAt(randomIndex);
-            }
-
-            return accountNumber;
-        }
-    </script>
+function generateAccountNumber() {
+    let accountNumber = '';
+    const digits = '0123456789';
+    for (let i = 0; i < 10; i++) {
+        accountNumber += digits.charAt(Math.floor(Math.random() * digits.length));
+    }
+    return accountNumber;
+}
+</script>
 </body>
 </html>

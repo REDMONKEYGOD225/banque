@@ -1,78 +1,152 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANQUE</title>
+    <title>Consultation de solde - BANQUE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #004d40, #2E8B57);
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 120px auto;
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2E8B57;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            background-color: #2E8B57;
+            color: white;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #246b46;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            display: none;
+            text-align: center;
+        }
+
+        #result.success {
+            background-color: #43a047;
+            color: white;
+        }
+
+        #result.error {
+            background-color: #e53935;
+            color: white;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn-link {
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            background-color: #004d40;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-link:hover {
+            background-color: #00796b;
+        }
+    </style>
 </head>
 <body>
-    <form id="balanceForm" action="#" style="margin-top: 300px; margin-left: 500px;"> 
-        <input type="text" id="accountNumberInput" placeholder="Entrez votre numéro de compte"> <br> <br>
-        <button type="submit">RECHERCHER</button>
-    </form>
+    <div class="container">
+        <h1>Consultation de solde</h1>
 
-    <div id="balanceResult" style="display: none;"></div>
+        <form id="balanceForm">
+            <input type="text" id="accountNumberInput" placeholder="Numéro de compte" required />
+            <button type="submit">Rechercher</button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="btn-container">
+            <a href="../index.html" class="btn-link">🏠 Accueil</a>
+            <a href="dépot.html" class="btn-link">💵 Faire un dépôt</a>
+        </div>
+    </div>
 
     <script>
-        document.getElementById('balanceForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Empêche la soumission du formulaire
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById('balanceForm');
+            const resultDiv = document.getElementById('result');
 
-            var accountNumber = document.getElementById('accountNumberInput').value;
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
 
-            // Vérifier si le numéro de compte existe
-            if (accountExists(accountNumber)) {
-                var balance = getAccountBalance(accountNumber);
+                const accountNumber = document.getElementById('accountNumberInput').value.trim();
+                const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
 
-                // Afficher le solde du compte
-                var balanceResultDiv = document.getElementById('balanceResult');
-                balanceResultDiv.innerText = "Le solde du compte " + accountNumber + " est de : " + balance + " €";
-                balanceResultDiv.style.display = 'block';
-            } else {
-                // Afficher un message d'erreur si le numéro de compte n'existe pas
-                var balanceResultDiv = document.getElementById('balanceResult');
-                balanceResultDiv.innerText = "Le numéro de compte n'existe pas.";
-                balanceResultDiv.style.display = 'block';
-            }
+                // On cherche le compte correspondant
+                const account = accounts.find(acc => acc.number === accountNumber);
 
-            // Réinitialiser le champ du formulaire
-            document.getElementById('balanceForm').reset();
+                if (!account) {
+                    resultDiv.textContent = "❌ Le numéro de compte n'existe pas.";
+                    resultDiv.className = "error";
+                    resultDiv.style.display = "block";
+                    return;
+                }
+
+                // Afficher le solde
+                resultDiv.innerHTML = `
+                    💳 <strong>${account.fullName}</strong><br>
+                    🔢 Numéro : ${account.number}<br>
+                    💰 Solde actuel : <strong>${account.balance} FCFA</strong>
+                `;
+                resultDiv.className = "success";
+                resultDiv.style.display = "block";
+
+                form.reset();
+            });
         });
-
-        function accountExists(accountNumber) {
-            // Ici, vous pouvez ajouter la logique pour vérifier si le numéro de compte existe dans votre système
-            // Vous pouvez utiliser une base de données, une API, ou une autre source de données pour effectuer cette vérification
-            // Pour l'exemple, nous supposons que nous avons un tableau d'objets contenant les comptes enregistrés
-            var accounts = [
-                { accountNumber: 'ABC1234567', balance: 1000 },
-                { accountNumber: 'DEF9876543', balance: 2000 },
-                { accountNumber: 'GHI3359242', balance: 3000 },
-                { accountNumber: 'JKL8455284', balance: 4000 },
-                { accountNumber: 'MNO7328615', balance: 5000 },
-            ];
-
-            return accounts.some(function(account) {
-                return account.accountNumber === accountNumber;
-            });
-        }
-
-        function getAccountBalance(accountNumber) {
-            // Ici, vous pouvez ajouter la logique pour récupérer le solde du compte à partir de votre système
-            // Encore une fois, cela peut impliquer l'utilisation d'une base de données, d'une API, etc.
-            // Pour l'exemple, nous supposons que nous avons un tableau d'objets contenant les comptes enregistrés
-            var accounts = [
-                { accountNumber: 'ABC1234567', balance: 1000 },
-                { accountNumber: 'DEF9876543', balance: 2000 },
-                { accountNumber: 'GHI3359242', balance: 3000 },
-                { accountNumber: 'JKL8455284', balance: 4000 },
-                { accountNumber: 'MNO7328615', balance: 5000 },
-            ];
-
-            var account = accounts.find(function(account) {
-                return account.accountNumber === accountNumber;
-            });
-
-            return account.balance;
-        }
     </script>
 </body>
 </html>

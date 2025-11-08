@@ -1,71 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BANQUE</title>
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-        }
-
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liste des comptes - BANQUE</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body { font-family: 'Poppins', sans-serif; margin: 0; background-color: #f4f4f9; }
+    .container { max-width: 900px; margin: 50px auto; padding: 20px; background-color: #2E8B57; color: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    h2 { text-align: center; margin-bottom: 20px; font-weight: 600; }
+    table { border-collapse: collapse; width: 100%; background-color: white; color: #333; border-radius: 8px; overflow: hidden; }
+    th, td { padding: 12px 15px; text-align: left; }
+    th { background-color: #2E8B57; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    input[type="text"] { width: 90%; padding: 10px; margin: 15px 0; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; }
+    button { padding: 10px 20px; margin-bottom: 15px; border: none; border-radius: 8px; background-color: #2E8B57; color: white; cursor: pointer; transition: background 0.3s; }
+    button:hover { background-color: #276749; }
+    #result { margin-top: 15px; padding: 10px; background-color: #ffffff33; border-radius: 8px; color: white; font-weight: 500; }
+</style>
 </head>
 <body>
-    <h2 style="text-align: center;">Liste des comptes enregistrés</h2>
+<div class="container">
+    <h2>Liste des comptes enregistrés</h2>
+
+    <input type="text" id="searchInput" placeholder="Entrez le nom, prénom ou numéro de compte">
+    <button onclick="searchAccount()">Rechercher</button>
+
+    <div id="result"></div>
 
     <table>
         <thead>
             <tr>
                 <th>Date de création</th>
                 <th>Numéro de compte</th>
-                <th>Nom et prénoms du titulaire du compte</th>
+                <th>Nom et prénoms du titulaire</th>
             </tr>
         </thead>
-        <tbody>
-
-            <tr>
-                <td>01/01/2023</td>
-                <td>ABC1234567</td>
-                <td>KOUASSI YAO JEAN PAUL DANICK</td>
-            </tr>
-
-            <tr>
-                <td>15/02/2023</td>
-                <td>DEF9876543</td>
-                <td>KOUAME ADAMOU</td>
-            </tr>
-
-            <tr>
-                <td>19/02/2023</td>
-                <td>GHI3359242</td>
-                <td>KOFFI LYDIA</td>
-            </tr>
-
-            <tr>
-                <td>11/05/2023</td>
-                <td>JKL8455284</td>
-                <td>MAEL BAOUELI</td>
-            </tr>
-
-            <tr>
-                <td>15/07/2023</td>
-                <td>MNL7328615</td>
-                <td>DIA JEAN FRANCOIS</td>
-            </tr>
-
-
-
+        <tbody id="accountTable">
+            <!-- Les comptes seront insérés ici dynamiquement -->
         </tbody>
     </table>
+</div>
+
+<script>
+// Fonction pour afficher tous les comptes
+function displayAccounts() {
+    const table = document.getElementById('accountTable');
+    table.innerHTML = ''; // Vider le tableau
+    const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+
+    accounts.forEach(acc => {
+        const row = table.insertRow();
+        row.insertCell(0).innerText = acc.date;
+        row.insertCell(1).innerText = acc.number;
+        row.insertCell(2).innerText = acc.fullName;
+    });
+}
+
+// Fonction de recherche
+function searchAccount() {
+    const input = document.getElementById('searchInput').value.toLowerCase();
+    const accounts = JSON.parse(localStorage.getItem('accounts')) || [];
+    const resultDiv = document.getElementById('result');
+
+    const found = accounts.find(acc => 
+        acc.number.toLowerCase().includes(input) || 
+        acc.fullName.toLowerCase().includes(input)
+    );
+
+    if (found) {
+        resultDiv.innerText = `Compte trouvé : ${found.fullName} - Numéro : ${found.number} - Date : ${found.date}`;
+    } else {
+        resultDiv.innerText = "Aucun compte trouvé avec ces informations.";
+    }
+}
+
+// Afficher les comptes au chargement de la page
+window.onload = displayAccounts;
+</script>
 </body>
 </html>
