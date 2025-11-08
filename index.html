@@ -43,6 +43,12 @@
         border: none;
         margin: 20px 0;
         font-size: 16px;
+        text-align: center;
+    }
+    .btn-inline {
+        display: inline-block;
+        width: 40%;
+        margin: 5px;
     }
 </style>
 </head>
@@ -51,16 +57,46 @@
     <h1>BIENVENUE</h1>
     <h3>Quelle opération voulez-vous effectuer ?</h3>
 
-    <a href="banque/new.html" class="btn">Créer un nouveau compte</a>
-    <a href="banque/liste.html" class="btn">Liste des comptes enregistrés</a>
-    <a href="banque/solde.html" class="btn">Consultation de solde</a>
-    <a href="banque/dépot.html" class="btn">Opération de dépôt</a>
-    <a href="banque/retrait.html" class="btn">Opération de retrait</a>
+    <a href="banque/new.html" class="btn">1️⃣ Créer un nouveau compte</a>
+    <a href="banque/liste.html" class="btn">2️⃣ Liste des comptes enregistrés</a>
+    <a href="banque/solde.html" class="btn">3️⃣ Consultation de solde</a>
+    <a href="banque/dépot.html" class="btn">4️⃣ Opération de dépôt</a>
+    <a href="banque/retrait.html" class="btn">5️⃣ Opération de retrait</a>
 
-    <input type="text" placeholder="Entrez le numéro de l’opération">
-    <a href="#" class="btn">ACCUEIL</a>
-    <a href="#" class="btn">VALIDER</a>
+    <input type="text" id="operationInput" placeholder="Entrez le numéro de l’opération (1 à 5)">
+    
+    <div>
+        <a href="#" class="btn btn-inline" id="homeBtn">🏠 ACCUEIL</a>
+        <a href="#" class="btn btn-inline" id="validateBtn">✅ VALIDER</a>
+    </div>
 </div>
-<script src="banque/banque.js"></script>
+
+<script>
+    document.getElementById('validateBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        const input = document.getElementById('operationInput').value.trim();
+
+        // Dictionnaire des redirections
+        const routes = {
+            '1': 'banque/new.html',
+            '2': 'banque/liste.html',
+            '3': 'banque/solde.html',
+            '4': 'banque/dépot.html',
+            '5': 'banque/retrait.html'
+        };
+
+        if (routes[input]) {
+            window.location.href = routes[input];
+        } else {
+            alert("⚠️ Veuillez entrer un numéro valide (1 à 5).");
+        }
+    });
+
+    // Bouton Accueil (revient sur la même page)
+    document.getElementById('homeBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('operationInput').value = '';
+    });
+</script>
 </body>
 </html>
